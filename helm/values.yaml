@@ -1,0 +1,30 @@
+# Default values for showroom.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: showroom
+
+deployer:
+  domain: apps.cluster-guid.sandbox.opentlc.com
+
+home:
+  image: registry.redhat.io/ubi8/httpd-24:latest
+  contentMount: /var/www/html/
+  contentConfig: showroom-html
+  resources: {}
+
+documentation:
+  repoUrl: https://github.com/tonykay/showroom-poc-2023-06.git
+  repoRevision: development
+  image: image-registry.openshift-image-registry.svc:5000/showroom/documentation:latest
+  resources: {}
+
+terminal:
+  image: quay.io/juliaaano/terminal:v1.0.0
+  name: terminal
+  resources: {}
+
+codeserver:
+  url: http://codeserver:8080
+  image: docker.io/codercom/code-server:latest
+  resources: {}

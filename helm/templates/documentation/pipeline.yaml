@@ -1,0 +1,148 @@
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: documentation
+  namespace: {{ .Values.namespace }}
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: documentation
+  namespace: {{ .Values.namespace }}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: documentation:latest
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: httpd:2.4
+        namespace: openshift
+    type: Source
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: showroom
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: antora
+  namespace: {{ .Values.namespace }}
+  annotations:
+    description: |
+      Build Antora site.
+spec:
+  workspaces:
+  - name: source
+    mountPath: /antora
+  steps:
+  - name: build
+    # image: docker.io/antora/antora:latest
+    image: quay.io/openshiftlabs/antora-for-mad-ws:1.0
+    args:
+    - site.yml
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: showroom
+  namespace: {{ .Values.namespace }}
+spec:
+  params:
+  - name: git-repo-url
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: showroom-
+    spec:
+      params:
+      - name: SOURCE_GIT_URL
+        value: $(tt.params.git-repo-url)
+      - name: SOURCE_GIT_REVISION
+        value: $(tt.params.git-revision)
+      pipelineRef:
+        name: showroom
+      workspaces:
+      - name: showroom
+        persistentVolumeClaim:
+          claimName: showroom
+      # - name: showroom-emptydir
+      #   emptyDir: {}
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: showroom
+  namespace: {{ .Values.namespace }}
+spec:
+  params:
+  - name: SOURCE_GIT_URL
+    type: string
+    description: The application git repository url
+    default: {{ .Values.documentation.repoUrl }}
+  - name: SOURCE_GIT_REVISION
+    type: string
+    default: {{ .Values.documentation.repoRevision }}
+    description: The application git repository revision
+
+  workspaces:
+  - name: showroom
+  # - name: showroom-emptydir
+
+  tasks:
+
+  - name: git-clone
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    params:
+    - name: url
+      value: $(params.SOURCE_GIT_URL)
+    - name: revision
+      value: $(params.SOURCE_GIT_REVISION)
+    - name: deleteExisting
+      value: 'true'
+    workspaces:
+    - name: output
+      workspace: showroom
+
+  - name: build-antora
+    runAfter:
+    - git-clone
+    taskRef:
+      kind: Task
+      name: antora
+    workspaces:
+    - name: source
+      workspace: showroom
+
+  - name: build-image
+    runAfter:
+    - build-antora
+    taskRef:
+      kind: ClusterTask
+      name: openshift-client
+    params:
+    - name: SCRIPT
+      value: |
+        oc start-build documentation --from-dir="gh-pages" -n showroom --wait=true
+    workspaces:
+    - name: manifest-dir
+      workspace: showroom

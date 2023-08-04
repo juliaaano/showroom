@@ -1,0 +1,13 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: terminal
+  namespace: {{ .Values.namespace }}
+spec:
+  to:
+    kind: Service
+    name: terminal
+  port:
+    targetPort: 8080
+  wildcardPolicy: None
