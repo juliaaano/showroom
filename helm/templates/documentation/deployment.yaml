@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: documentation
-        image: {{ .Values.documentation.image }}
+        image: image-registry.openshift-image-registry.svc:5000/{{ .Values.namespace }}/documentation:latest
         imagePullPolicy: Always
         ports:
          - containerPort: 8080

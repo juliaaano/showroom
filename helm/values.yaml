@@ -16,7 +16,6 @@ home:
 documentation:
   repoUrl: https://github.com/tonykay/showroom-poc-2023-06.git
   repoRevision: development
-  image: image-registry.openshift-image-registry.svc:5000/showroom/documentation:latest
   resources: {}
 
 terminal:
