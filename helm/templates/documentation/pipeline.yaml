@@ -75,6 +75,10 @@ spec:
     type: string
     default: {{ .Values.documentation.repoRevision }}
     description: The application git repository revision
+  - name: NAMESPACE
+    type: string
+    default: {{ .Values.namespace }}
+    description: The namespace target for showroom.
 
   workspaces:
   - name: showroom
@@ -116,7 +120,7 @@ spec:
     params:
     - name: SCRIPT
       value: |
-        oc start-build documentation --from-dir="gh-pages" -n showroom --wait=true
+        oc start-build documentation --from-dir="gh-pages" -n $(params.NAMESPACE) --wait=true
     workspaces:
     - name: manifest-dir
       workspace: showroom
