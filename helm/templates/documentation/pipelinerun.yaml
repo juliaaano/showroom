@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: showroom-run-
+  namespace: {{ .Values.namespace }}
+spec:
+  pipelineRef:
+    name: showroom
+  workspaces:
+  - name: showroom
+    persistentVolumeClaim:
+      claimName: showroom
