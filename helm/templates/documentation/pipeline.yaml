@@ -44,6 +44,7 @@ metadata:
   name: antora
   namespace: {{ .Values.namespace }}
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     description: |
       Build Antora site.
 spec:
@@ -62,6 +63,8 @@ kind: Pipeline
 metadata:
   name: showroom
   namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   params:
   - name: SOURCE_GIT_URL
