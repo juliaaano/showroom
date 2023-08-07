@@ -57,35 +57,6 @@ spec:
     args:
     - site.yml
 ---
-apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerTemplate
-metadata:
-  name: showroom
-  namespace: {{ .Values.namespace }}
-spec:
-  params:
-  - name: git-repo-url
-  - name: git-revision
-  resourcetemplates:
-  - apiVersion: tekton.dev/v1
-    kind: PipelineRun
-    metadata:
-      generateName: showroom-
-    spec:
-      params:
-      - name: SOURCE_GIT_URL
-        value: $(tt.params.git-repo-url)
-      - name: SOURCE_GIT_REVISION
-        value: $(tt.params.git-revision)
-      pipelineRef:
-        name: showroom
-      workspaces:
-      - name: showroom
-        persistentVolumeClaim:
-          claimName: showroom
-      # - name: showroom-emptydir
-      #   emptyDir: {}
----
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
