@@ -12,6 +12,8 @@ spec:
     path: helm
     helm:
       values: |
+        namespace:
+          showroom
         deployer:
           domain: apps.cluster-guid.sandbox.opentlc.com
         documentation:
