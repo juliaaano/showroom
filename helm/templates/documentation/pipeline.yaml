@@ -112,7 +112,7 @@ metadata:
   name: showroom-pipeline-run
   namespace: {{ .Values.namespace }}
   annotations:
-    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   backoffLimit: 3
   template:
