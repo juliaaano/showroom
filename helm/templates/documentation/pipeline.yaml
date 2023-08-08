@@ -26,18 +26,6 @@ spec:
         namespace: openshift
     type: Source
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: showroom
-  namespace: {{ .Values.namespace }}
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
----
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
@@ -57,25 +45,6 @@ spec:
     image: quay.io/openshiftlabs/antora-for-mad-ws:1.0
     args:
     - site.yml
----
-apiVersion: triggers.tekton.dev/v1beta1
-kind: TriggerTemplate
-metadata:
-  name: showroom
-  namespace: {{ .Values.namespace }}
-spec:
-  resourcetemplates:
-  - apiVersion: tekton.dev/v1
-    kind: PipelineRun
-    metadata:
-      generateName: showroom-
-    spec:
-      pipelineRef:
-        name: showroom
-      workspaces:
-      - name: showroom
-        persistentVolumeClaim:
-          claimName: showroom
 ---
 apiVersion: tekton.dev/v1
 kind: Pipeline
@@ -140,9 +109,27 @@ spec:
       restartPolicy: Never
       containers:
       - name: main
-        image: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8:v1.11.0-25
+        image: quay.io/openshift/origin-cli:latest
         command:
         - /bin/bash
         - -c
         - |
-          tkn pipeline start showroom --workspace name=showroom,claimName=showroom --use-param-defaults -n {{ .Values.namespace }}
+          cat <<EOF | oc apply -f -
+          apiVersion: tekton.dev/v1
+          kind: PipelineRun
+          metadata:
+            generateName: showroom-
+            namespace: {{ .Values.namespace }}
+          spec:
+            pipelineRef:
+              name: showroom
+            workspaces:
+            - name: showroom
+              volumeClaimTemplate:
+                spec:
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          EOF
