@@ -66,41 +66,23 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
-  params:
-  - name: SOURCE_GIT_URL
-    type: string
-    description: The application git repository url
-    default: {{ .Values.documentation.repoUrl }}
-  - name: SOURCE_GIT_REVISION
-    type: string
-    default: {{ .Values.documentation.repoRevision }}
-    description: The application git repository revision
-  - name: NAMESPACE
-    type: string
-    default: {{ .Values.namespace }}
-    description: The namespace target for showroom.
-
   workspaces:
   - name: showroom
-  # - name: showroom-emptydir
-
   tasks:
-
   - name: git-clone
     taskRef:
       kind: ClusterTask
       name: git-clone
     params:
     - name: url
-      value: $(params.SOURCE_GIT_URL)
+      value: {{ .Values.documentation.repoUrl }}
     - name: revision
-      value: $(params.SOURCE_GIT_REVISION)
+      value: {{ .Values.documentation.repoRevision }}
     - name: deleteExisting
       value: 'true'
     workspaces:
     - name: output
       workspace: showroom
-
   - name: build-antora
     runAfter:
     - git-clone
@@ -110,7 +92,6 @@ spec:
     workspaces:
     - name: source
       workspace: showroom
-
   - name: build-image
     runAfter:
     - build-antora
@@ -120,7 +101,29 @@ spec:
     params:
     - name: SCRIPT
       value: |
-        oc start-build documentation --from-dir="gh-pages" -n $(params.NAMESPACE) --wait=true
+        oc start-build documentation --from-dir="gh-pages" -n {{ .Values.namespace }} --wait=true
     workspaces:
     - name: manifest-dir
       workspace: showroom
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: showroom-pipeline-run
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: pipeline
+      restartPolicy: Never
+      containers:
+      - name: main
+        image: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8:v1.11.0-25
+        command:
+        - /bin/bash
+        - -c
+        - |
+          tkn pipeline start showroom --workspace name=showroom,claimName=showroom --use-param-defaults -n {{ .Values.namespace }}
