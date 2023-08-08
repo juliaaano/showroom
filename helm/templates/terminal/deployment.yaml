@@ -14,7 +14,7 @@ spec:
       labels:
         app.kubernetes.io/name: terminal
     spec:
-      serviceAccountName: admin
+      serviceAccountName: {{ .Values.terminal.serviceAccount }}
       containers:
       - name: terminal
         image: {{ .Values.terminal.image }}
