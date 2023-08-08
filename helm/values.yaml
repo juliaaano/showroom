@@ -21,6 +21,7 @@ documentation:
 terminal:
   image: quay.io/juliaaano/terminal:v1.0.0
   name: terminal
+  serviceAccount: showroom
   resources: {}
 
 codeserver:
