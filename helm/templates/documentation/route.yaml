@@ -1,3 +1,4 @@
+{{- if not .Values.documentation.url }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -13,3 +14,4 @@ spec:
   tls:
     termination: edge
   wildcardPolicy: None
+{{- end }}

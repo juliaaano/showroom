@@ -1,3 +1,4 @@
+{{- if not .Values.documentation.url }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,3 +42,4 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+{{- end }}

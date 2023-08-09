@@ -1,3 +1,4 @@
+{{- if not .Values.documentation.url }}
 ---
 apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -149,3 +150,4 @@ spec:
                       storage: 1Gi
           EOF
           oc wait --for=condition=ready pod -l app.kubernetes.io/name=documentation --timeout=180s
+{{- end }}

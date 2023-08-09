@@ -9,7 +9,11 @@
   <body>
     <div class="content">
       <div class="split left">
+        {{- if .Values.documentation.url }}
+        <iframe id="doc"  src="{{ .Values.documentation.url }}" width="100%" style="border:none;"></iframe>
+        {{- else }}
         <iframe id="doc"  src="{{ include "showroom.route"  (list "documentation" .Values) }}" width="100%" style="border:none;"></iframe>
+        {{- end }}
       </div>
       <div class="split right">
         <div class="tab">

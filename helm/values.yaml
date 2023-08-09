@@ -18,6 +18,15 @@ home:
       cpu: 100m
       memory: 64Mi
 
+#
+# Use this to reference an external url for the documentation.
+#
+# documentation:
+#   url: https://guides.external.com
+
+#
+# Ignored if using {"documentation":{"url":""}}
+#
 documentation:
   repoUrl: https://github.com/tonykay/showroom-poc-2023-06.git
   repoRevision: development
