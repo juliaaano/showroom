@@ -1,10 +1,3 @@
-{{- $tektonV1Found := false -}}
-{{- range .Capabilities.APIVersions -}}
-  {{- if eq . "tekton.dev/v1" -}}
-    {{- $tektonV1Found = true -}}
-  {{- end -}}
-{{- end -}}
-{{- if not $tektonV1Found }}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -17,4 +10,3 @@ spec:
   name: openshift-pipelines-operator-rh
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-{{- end }}

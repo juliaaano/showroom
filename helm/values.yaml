@@ -33,7 +33,7 @@ documentation:
       memory: 64Mi
 
 terminal:
-  image: quay.io/juliaaano/terminal:v1.0.0
+  image: ghcr.io/juliaaano/terminal:latest
   name: terminal
   serviceAccount: showroom
   resources:
