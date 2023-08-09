@@ -11,20 +11,44 @@ home:
   image: registry.redhat.io/ubi8/httpd-24:latest
   contentMount: /var/www/html/
   contentConfig: showroom-html
-  resources: {}
+  resources:
+    limits:
+      memory: 64Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
 
 documentation:
   repoUrl: https://github.com/tonykay/showroom-poc-2023-06.git
   repoRevision: development
-  resources: {}
+  image: 
+  antora:
+    image: quay.io/openshiftlabs/antora-for-mad-ws:1.0
+    # Image: docker.io/antora/antora:latest
+  resources:
+    limits:
+      memory: 64Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
 
 terminal:
   image: quay.io/juliaaano/terminal:v1.0.0
   name: terminal
   serviceAccount: showroom
-  resources: {}
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 500m
+      memory: 256Mi
 
 codeserver:
   url: http://codeserver:8080
   image: docker.io/codercom/code-server:latest
-  resources: {}
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
