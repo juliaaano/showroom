@@ -18,14 +18,26 @@
       <div class="split right">
         <div class="tab">
           <button class="tablinks" onclick="openTerminal(event, 'terminal_tab')" id="defaultOpen" tabindex="0">Terminal</button>
+          {{- if .Values.codeserver }}
           <button class="tablinks" onclick="openTerminal(event, 'codeserver_tab')">VS Code</button>
+          {{- end }}
+          {{- range .Values.services }}
+          <button class="tablinks" onclick="openTerminal(event, 'svc_{{ .name }}_tab')">{{ .name }}</button>
+          {{- end }}
         </div>
         <div id="terminal_tab" class="tabcontent">
           <iframe id="terminal_01" src="{{ include "showroom.route"  (list "terminal" .Values) }}" width="100%" style="border:none;"></iframe>
         </div>
+        {{- if .Values.codeserver }}
         <div id="codeserver_tab" class="tabcontent">
           <iframe id="codeserver" src="{{ include "showroom.route"  (list "codeserver" .Values) }}" height="100%" width="100%" style="border:none;"></iframe>
         </div>
+        {{- end }}
+        {{- range .Values.services }}
+        <div id="svc_{{ .name }}_tab" class="tabcontent">
+          <iframe id="svc_{{ .name }}" src="{{ .url }}" height="100%" width="100%" style="border:none;"></iframe>
+        </div>
+        {{- end }}
       </div>
     </div>
     <script>
