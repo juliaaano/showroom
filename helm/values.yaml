@@ -21,7 +21,6 @@ home:
 documentation:
   repoUrl: https://github.com/tonykay/showroom-poc-2023-06.git
   repoRevision: development
-  image: 
   antora:
     image: quay.io/openshiftlabs/antora-for-mad-ws:1.0
     # Image: docker.io/antora/antora:latest

@@ -10,4 +10,6 @@ spec:
     name: showroom
   port:
     targetPort: 8080
+  tls:
+    termination: edge
   wildcardPolicy: None
