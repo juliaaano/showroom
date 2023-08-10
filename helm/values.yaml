@@ -25,14 +25,15 @@ home:
 #   url: https://my-documentation.external.com
 
 #
-# Ignored if using {"documentation":{"url":""}}
+# Ignored if using {"documentation":{"url":"..."}}
 #
 documentation:
   repoUrl: https://mygit.com/repo/name
   repoRevision: development
+  userinfo: userinfo-default
   antora:
     image: quay.io/openshiftlabs/antora-for-mad-ws:1.0
-    # Image: docker.io/antora/antora:latest
+    # image: docker.io/antora/antora:latest
   resources:
     limits:
       memory: 64Mi

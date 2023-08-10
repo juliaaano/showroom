@@ -29,25 +29,6 @@ spec:
 #registry.redhat.io/rhel8/httpd-24:1-274
 ---
 apiVersion: tekton.dev/v1
-kind: Task
-metadata:
-  name: antora
-  namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-    description: |
-      Build Antora site.
-spec:
-  workspaces:
-  - name: source
-    mountPath: /antora
-  steps:
-  - name: build
-    image: {{ .Values.documentation.antora.image }}
-    args:
-    - site.yml
----
-apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: showroom
@@ -77,9 +58,30 @@ spec:
   - name: build-antora
     runAfter:
     - git-clone
-    taskRef:
-      kind: Task
-      name: antora
+    taskSpec:
+      workspaces:
+      - name: source
+        mountPath: /antora
+      volumes:
+      - name: userinfo
+        configMap:
+          name: {{ .Values.documentation.userinfo }}
+      steps:
+      - name: userinfo
+        image: registry.access.redhat.com/ubi9:9.2-722
+        script: |
+          #!/usr/bin/env bash
+          set -euxo pipefail
+          cat /antora/documentation/modules/ROOT/pages/include_vars.adoc
+          cp /userinfo/userinfo.adoc /antora/documentation/modules/ROOT/pages/include_vars.adoc
+          cat /antora/documentation/modules/ROOT/pages/include_vars.adoc
+        volumeMounts:
+        - name: userinfo
+          mountPath: /userinfo
+      - name: build
+        image: {{ .Values.documentation.antora.image }}
+        args:
+        - site.yml
     workspaces:
     - name: source
       workspace: showroom
@@ -115,8 +117,6 @@ kind: Job
 metadata:
   name: showroom-pipeline-run
   namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   backoffLimit: 2
   template:

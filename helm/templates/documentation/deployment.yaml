@@ -5,8 +5,6 @@ kind: Deployment
 metadata:
   name: documentation
   namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 1
   selector:

@@ -1,10 +1,10 @@
 # SHOWROOM
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Welcome to the showroom OpenShift application.
 
-# Installation
+## Install
 
-A basic installation requires only applying the helm templates in your cluster.
+A basic install requires only applying the helm templates in your cluster.
 
 ```
 helm template ./helm \
@@ -12,17 +12,15 @@ helm template ./helm \
 --set documentation.url=https://my-documentation.external.com | oc apply -f -
 ```
 
-This helm chart lets you provide the git repo details of where the documentation is located.
+The same helm chart can lets OpenShift build and deploy the documentation from the source code.
 
-OpenShift will build and deploy the documentation from the source code.
-
-For that, you must have Openshift Pipelines (Tekton) avaiable in your cluster. Install it on your own or use this command next for your convenience:
+For that, you must have Openshift Pipelines (Tekton) in your cluster. You may optionally install this way:
 
 ```
 oc create -f ./openshift-pipelines.yaml
 ```
 
-Now you're ready to install by providing your own documentation source repository:
+Now you're ready to install showroom by providing your own documentation source repository:
 
 ```
 helm template ./helm \
@@ -32,6 +30,19 @@ helm template ./helm \
 
 ## ArgoCD
 
+It is possible to deploy the helm chart with ArgoCD. This repo provides an ArgoCD/Application for
+your convenience.
+
 ```
 oc create -f ./argocd/applicaton.yaml
+```
+
+## Multi-user installation
+
+The chart can be installed multiple times in one namespace per user. You control this in helm values.yaml.
+
+An easy way to setup and manage a multi-user deployment is via the ArgoCD/ApplicationSet.
+
+```
+oc create -f ./argocd/applicatonset.yaml
 ```

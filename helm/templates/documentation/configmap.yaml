@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.documentation.userinfo }}
+  namespace: {{ .Values.namespace }}
+data:
+  userinfo.adoc: |
+    :var1: value1
+    :guid: abc123
+    :ssh_username: myusername
+    :ssh_password: mypassword
+    :ssh_command: ssh user@domain.com
