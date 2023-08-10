@@ -149,5 +149,5 @@ spec:
                     requests:
                       storage: 1Gi
           EOF
-          oc wait --for=condition=ready pod -l app.kubernetes.io/name=documentation --timeout=180s
+          oc rollout status deploy documentation -n {{ .Values.namespace }} --timeout=300s
 {{- end }}

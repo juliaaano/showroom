@@ -34,7 +34,7 @@ It is possible to deploy the helm chart with ArgoCD. This repo provides an ArgoC
 your convenience.
 
 ```
-oc create -f ./argocd/applicaton.yaml
+oc create -f ./argocd/application.yaml
 ```
 
 ## Multi-user installation

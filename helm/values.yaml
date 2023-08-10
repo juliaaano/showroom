@@ -72,6 +72,6 @@ terminal:
 #
 services:
   - name: codeserver
-    url: https://codeserver-codeserver-user2.apps.cluster-jm13.jm13.sandbox345.opentlc.com
+    url: https://codeserver-codeserver.apps.cluster-guid.sandbox.opentlc.com
   # - name: myservice
   #   url: http://myservice.com/hello2
