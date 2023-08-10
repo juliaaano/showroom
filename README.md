@@ -4,7 +4,12 @@ Welcome to the showroom OpenShift application.
 
 ## Install
 
-A basic install requires only applying the helm templates in your cluster.
+A basic installation will vary depending if you have a docs site running or you want to build and serve
+the documentation from the source code.
+
+### Bring your own docs
+
+In this scenario you have the docs served externally with a public URL:
 
 ```
 helm template ./helm \
@@ -12,15 +17,18 @@ helm template ./helm \
 --set documentation.url=https://my-documentation.external.com | oc apply -f -
 ```
 
-The same helm chart can lets OpenShift build and deploy the documentation from the source code.
+### Build docs from source
 
-For that, you must have Openshift Pipelines (Tekton) in your cluster. You may optionally install this way:
+In this scenario you have a Git repo URL with an Antora website and want OpenShift to build and deploy
+the documentation from the source code.
+
+This installation mode requires Openshift Pipelines (Tekton) installed in the cluster.
 
 ```
 oc create -f ./openshift-pipelines.yaml
 ```
 
-Now you're ready to install showroom by providing your own documentation source repository:
+Now you're ready to install showroom by just providing the documentation source repository:
 
 ```
 helm template ./helm \
