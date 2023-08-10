@@ -1,3 +1,4 @@
+{{- if not .Values.documentation.url }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -11,3 +12,4 @@ data:
     :ssh_username: myusername
     :ssh_password: mypassword
     :ssh_command: ssh user@domain.com
+{{- end }}
