@@ -44,5 +44,5 @@ The chart can be installed multiple times in one namespace per user. You control
 An easy way to setup and manage a multi-user deployment is via the ArgoCD/ApplicationSet.
 
 ```
-oc create -f ./argocd/applicatonset.yaml
+oc create -f ./argocd/applicationset.yaml
 ```
